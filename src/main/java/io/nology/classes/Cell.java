@@ -6,8 +6,8 @@ public class Cell {
     private boolean wasChecked;
     private char value;
 
-    public Cell(boolean hasMine) {
-        this.hasMine = hasMine;
+    public Cell() {
+        this.hasMine = false;
         this.wasChecked = false;
         this.value = '?';
     }
