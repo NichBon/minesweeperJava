@@ -11,37 +11,63 @@ import io.nology.utils.Utils;
 public class Main {
     public static void main(String[] args) {
 
-        int rows = 3;
-        int columns = 3;
-        int mines = 9;
+        Scanner inputScanner = new Scanner(System.in);
+        String userInput;
+        int rows = 0;
+        int columns = 0;
+        int mines = 0;
+        int rowGuess = 0;
+        int columnGuess = 0;
+        int spacesRemaining = 0;
+        int guessReturnValue = 0;
+        boolean gameEnd = false;
+
+        System.out.printf(
+                "%n%n%n    Welcome to Minesweeper! %nThe game requires you to pick a number of rows, columns and mines(X) to begin.%n%n");
+
+        // USER INPUTS
+        rows = Utils.inputAndValidation(rows, "rows", 1, 0, inputScanner, "(2-20 recommended)");
+        columns = Utils.inputAndValidation(columns, "columns", 1, 0, inputScanner, "(2-20 recommended)");
+        mines = Utils.inputAndValidation(mines, "mines", 1, columns * rows - 1, inputScanner,
+                "(1 min, " + (rows * columns - 1) + " max)");
+
+        // GAME START
         int[][] mineCoordinates = Utils.mineCoordinates(rows, columns, mines);
         Cell[][] board = Utils.boardInititation(rows, columns, mineCoordinates);
-        System.out.printf("+-+-+-+-+-+");
+        spacesRemaining = columns * rows - mines;
+        Utils.boardPrint(board, gameEnd);
 
-        for (int i = 0; i < rows; i++) {
-            System.out.printf("%n|");
-            for (int j = 0; j < columns; j++) {
-                System.out.print(Utils.evaluateCell(i, j, board) + "|");
+        // GUESSING
+        while (gameEnd == false) {
+            rowGuess = 0;
+            columnGuess = 0;
+            guessReturnValue = 0;
+
+            System.out.printf("Clear spaces remaining: " + spacesRemaining + "%n%n");
+            rowGuess = Utils.inputAndValidation(rowGuess, "the row to guess", 1, rows, inputScanner,
+                    "(minimum 1, maximum " + rows + ")");
+            columnGuess = Utils.inputAndValidation(columnGuess, "the column to guess", 1, columns, inputScanner,
+                    "(minimum 1, maximum " + columns + ")");
+
+            guessReturnValue = Utils.guess(rowGuess, columnGuess, board);
+
+            Utils.boardPrint(board, gameEnd);
+
+            if (guessReturnValue == -1) {
+                gameEnd = true;
+                System.out.printf("%nboom! %n%n");
+            } else {
+                spacesRemaining -= guessReturnValue;
             }
-            System.out.printf("%n+-+-+-+-+-+");
+            if (spacesRemaining <= 0) {
+                gameEnd = true;
+                System.out.printf("%nCongratulations! %n%n");
+            }
         }
-
-        GameInfo gameInfo = new GameInfo(rows, columns, mines, mineCoordinates);
-
+        Utils.boardPrint(board, gameEnd);
+        inputScanner.close();
     }
 
 }
 
-// Scanner inputScanner = new Scanner(System.in);
-// char userInput = 'a';
-
-// while (userInput != 'n') {
-
-// System.out.println("Enter n to end");
-// userInput = inputScanner.nextLine().charAt(0);
-// System.out.println("detected: " + userInput);
-// }
-
-// System.out.println("ending");
-
-// inputScanner.close();
+// GameInfo gameInfo = new GameInfo(rows, columns, mines, mineCoordinates);
