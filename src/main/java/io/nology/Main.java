@@ -6,6 +6,7 @@ import java.util.Set;
 import io.nology.classes.Board;
 import io.nology.classes.Cell;
 import io.nology.classes.GameInfo;
+import io.nology.classes.TextColor;
 import io.nology.utils.Utils;
 
 public class Main {
@@ -26,10 +27,11 @@ public class Main {
                 "%n%n%n    Welcome to Minesweeper! %nThe game requires you to pick a number of rows, columns and mines(X) to begin.%n%n");
 
         // USER INPUTS
-        rows = Utils.inputAndValidation(rows, "rows", 1, 0, inputScanner, "(2-20 recommended)");
-        columns = Utils.inputAndValidation(columns, "columns", 1, 0, inputScanner, "(2-20 recommended)");
+        rows = Utils.inputAndValidation(rows, "rows", 1, 0, inputScanner, "(2-20 recommended)", TextColor.CYAN);
+        columns = Utils.inputAndValidation(columns, "columns", 1, 0, inputScanner, "(2-20 recommended)",
+                TextColor.PURPLE);
         mines = Utils.inputAndValidation(mines, "mines", 1, columns * rows - 1, inputScanner,
-                "(1 min, " + (rows * columns - 1) + " max)");
+                "(1 min, " + (rows * columns - 1) + " max)", TextColor.WHITE);
 
         // GAME START
         int[][] mineCoordinates = Utils.mineCoordinates(rows, columns, mines);
@@ -45,9 +47,10 @@ public class Main {
 
             System.out.printf("Clear spaces remaining: " + spacesRemaining + "%n%n");
             rowGuess = Utils.inputAndValidation(rowGuess, "the row to guess", 1, rows, inputScanner,
-                    "(minimum 1, maximum " + rows + ")");
+                    "(minimum 1, maximum " + rows + ")", TextColor.CYAN);
             columnGuess = Utils.inputAndValidation(columnGuess, "the column to guess", 1, columns, inputScanner,
-                    "(minimum 1, maximum " + columns + ")");
+                    "(minimum 1, maximum " + columns + ")",
+                    TextColor.PURPLE);
 
             guessReturnValue = Utils.guess(rowGuess, columnGuess, board);
 
@@ -55,13 +58,13 @@ public class Main {
 
             if (guessReturnValue == -1) {
                 gameEnd = true;
-                System.out.printf("%nboom! %n%n");
+                System.out.printf("%n\u001B[31mBoom!%n%n\u001B[0m");
             } else {
                 spacesRemaining -= guessReturnValue;
             }
             if (spacesRemaining <= 0) {
                 gameEnd = true;
-                System.out.printf("%nCongratulations! %n%n");
+                System.out.printf("%n\u001B[32mCongratulations!%n%n\u001B[0m");
             }
         }
         Utils.boardPrint(board, gameEnd);

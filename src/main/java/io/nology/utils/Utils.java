@@ -7,7 +7,10 @@ import java.util.OptionalInt;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.w3c.dom.Text;
+
 import io.nology.classes.Cell;
+import io.nology.classes.TextColor;
 
 public class Utils {
     public static int[][] mineCoordinates(int rows, int columns, int mines) {
@@ -74,15 +77,32 @@ public class Utils {
     public static void boardPrint(Cell[][] board, boolean gameEnd) {
         int rows = board.length;
         int columns = board[0].length;
+        char value;
         System.out.printf("%n");
+        System.out.printf(TextColor.PURPLE + " ");
+        for (int i = 0; i < columns; i++) {
+            System.out.printf(" " + (i + 1));
+        }
+        System.out.printf(TextColor.RESET + "%n");
         printRowDivider(columns);
         for (int i = 0; i < rows; i++) {
+            System.out.print(TextColor.CYAN + (i + 1) + TextColor.RESET);
             System.out.printf("|");
             for (int j = 0; j < columns; j++) {
                 if (gameEnd == false && board[i][j].getWasChecked() == false) {
-                    System.out.print('?');
+                    System.out.print(TextColor.BLUE + "?" + TextColor.RESET);
                 } else {
-                    System.out.print(board[i][j].getValue());
+                    value = board[i][j].getValue();
+                    switch (value) {
+                        case 'X':
+                            System.out.print(TextColor.RED + value + TextColor.RESET);
+                            break;
+                        case '0':
+                            System.out.print(TextColor.WHITE + value + TextColor.RESET);
+                            break;
+                        default:
+                            System.out.print(TextColor.YELLOW + value + TextColor.RESET);
+                    }
                 }
                 System.out.printf("|");
             }
@@ -92,7 +112,7 @@ public class Utils {
     }
 
     public static void printRowDivider(int columns) {
-        System.out.printf("+");
+        System.out.printf(" +");
         for (int i = 0; i < columns; i++) {
             System.out.printf("-+");
         }
@@ -142,9 +162,11 @@ public class Utils {
 
     public static int inputAndValidation(int value, String valueName, int lower, int upper,
             Scanner inputScanner,
-            String validInputDescription) {
+            String validInputDescription,
+            String color) {
         while (value < lower || (upper > lower && value > upper)) {
-            System.out.println("Please enter the number of " + valueName + " " + validInputDescription + ":");
+            System.out.println("Please enter the number of " + color + valueName + TextColor.RESET + " "
+                    + validInputDescription + ":");
             String userInput = inputScanner.nextLine();
             if (userInput.matches("^\\d+$") && !userInput.equals("0")) {
                 value = Integer.parseInt(userInput);
@@ -160,6 +182,16 @@ public class Utils {
     }
 
 }
+
+// Reset: \u001B[0m
+// Black: \u001B[30m
+// Red: \u001B[31m
+// Green: \u001B[32m
+// Yellow: \u001B[33m
+// Blue: \u001B[34m
+// Purple: \u001B[35m
+// Cyan: \u001B[36m
+// White: \u001B[37m
 
 // public static void boardPrint(Cell[][] board, boolean gameEnd) {
 // int rows = board.length;
