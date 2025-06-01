@@ -1,7 +1,6 @@
 package io.nology;
 
 import java.util.Scanner;
-import java.util.Set;
 
 import io.nology.classes.Board;
 import io.nology.classes.Cell;
@@ -13,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner inputScanner = new Scanner(System.in);
-        String userInput;
         int rows = 0;
         int columns = 0;
         int mines = 0;
@@ -28,7 +26,8 @@ public class Main {
 
         // USER INPUTS
         rows = Utils.inputAndValidation(rows, "rows", 1, 0, inputScanner, "(2-20 recommended)", TextColor.CYAN);
-        columns = Utils.inputAndValidation(columns, "columns", 1, 0, inputScanner, "(2-20 recommended)",
+        columns = Utils.inputAndValidation(columns, "columns", (rows == 1 ? 2 : 1), 0, inputScanner,
+                "(2-20 recommended)",
                 TextColor.PURPLE);
         mines = Utils.inputAndValidation(mines, "mines", 1, columns * rows - 1, inputScanner,
                 "(1 min, " + (rows * columns - 1) + " max)", TextColor.WHITE);
@@ -40,17 +39,22 @@ public class Main {
         Utils.boardPrint(board, gameEnd);
 
         // GUESSING
+        boolean firstGuess = true;
         while (gameEnd == false) {
             rowGuess = 0;
             columnGuess = 0;
             guessReturnValue = 0;
 
-            System.out.printf("Clear spaces remaining: " + spacesRemaining + "%n%n");
+            System.out.printf("Clear spaces remaining: " + spacesRemaining + "%nMines: " + mines + "%n%n");
             rowGuess = Utils.inputAndValidation(rowGuess, "the row to guess", 1, rows, inputScanner,
-                    "(minimum 1, maximum " + rows + ")", TextColor.CYAN);
+                    "between 1 and " + rows, TextColor.CYAN) - 1;
             columnGuess = Utils.inputAndValidation(columnGuess, "the column to guess", 1, columns, inputScanner,
-                    "(minimum 1, maximum " + columns + ")",
-                    TextColor.PURPLE);
+                    "between 1 and " + columns, TextColor.PURPLE) - 1;
+
+            if (firstGuess == true && board[rowGuess][columnGuess].getHasMine() == true) {
+                Utils.moveMine(rowGuess, columnGuess, board);
+                firstGuess = false;
+            }
 
             guessReturnValue = Utils.guess(rowGuess, columnGuess, board);
 

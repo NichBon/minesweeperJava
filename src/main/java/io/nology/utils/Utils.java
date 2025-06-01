@@ -3,11 +3,8 @@ package io.nology.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.OptionalInt;
 import java.util.Scanner;
 import java.util.Set;
-
-import org.w3c.dom.Text;
 
 import io.nology.classes.Cell;
 import io.nology.classes.TextColor;
@@ -31,7 +28,7 @@ public class Utils {
             }
         }
 
-        System.out.println(Arrays.deepToString(mineCoordinates.toArray()));
+        // System.out.println(Arrays.deepToString(mineCoordinates.toArray()));
         int[][] coordinates = mineCoordinates.toArray(new int[mineCoordinates.size()][]);
         return coordinates;
     }
@@ -109,6 +106,7 @@ public class Utils {
             System.out.printf("%n");
             printRowDivider(columns);
         }
+        System.out.printf("%n");
     }
 
     public static void printRowDivider(int columns) {
@@ -121,8 +119,13 @@ public class Utils {
 
     public static int guess(int row, int column, Cell[][] board) {
 
+        if (board[row][column].getValue() == 'X') {
+            board[row][column].setWasChecked(true);
+            return -1;
+        }
+
         ArrayList<int[]> guessQueue = new ArrayList<>();
-        guessQueue.add(new int[] { row - 1, column - 1 });
+        guessQueue.add(new int[] { row, column });
         int rowPosition;
         int columnPosition;
         int checkedCount = 0;
@@ -130,14 +133,14 @@ public class Utils {
         while (guessQueue.size() > 0) {
             rowPosition = guessQueue.get(0)[0];
             columnPosition = guessQueue.get(0)[1];
-            board[rowPosition][columnPosition].setWasChecked(true);
-
             // end early if mine
-            if (board[rowPosition][columnPosition].getValue() == 'X')
-                return -1;
 
             // full check
-            checkedCount += 1;
+            if (board[rowPosition][columnPosition].getWasChecked() == false) {
+                board[rowPosition][columnPosition].setWasChecked(true);
+                checkedCount += 1;
+            }
+
             guessQueue.removeFirst();
             if (board[rowPosition][columnPosition].getValue() == '0') {
                 for (int i = -1; i <= 1; i++) {
@@ -146,12 +149,14 @@ public class Utils {
                                 || columnPosition + j < 0 || columnPosition + j > board[0].length - 1)
                             continue;
 
-                        if (board[rowPosition + i][columnPosition + j].getValue() == '0'
-                                && board[rowPosition + i][columnPosition + j].getWasChecked() == false)
-                            guessQueue.add(new int[] { rowPosition + i, columnPosition + j });
+                        if (board[rowPosition + i][columnPosition + j].getWasChecked() == false) {
+                            if (board[rowPosition + i][columnPosition + j].getValue() == '0') {
+                                guessQueue.add(new int[] { rowPosition + i, columnPosition + j });
+                            }
+                            board[rowPosition + i][columnPosition + j].setWasChecked(true);
+                            checkedCount += 1;
+                        }
 
-                        board[rowPosition + i][columnPosition + j].setWasChecked(true);
-                        checkedCount += 1;
                     }
                 }
             }
@@ -181,6 +186,46 @@ public class Utils {
         return value;
     }
 
+    public static void moveMine(int rowGuess, int columnGuess, Cell[][] board) {
+        board[rowGuess][columnGuess].setHasMine(false);
+        int mineRow = rowGuess;
+        int mineColumn = columnGuess;
+        boolean moveMine = true;
+        while (moveMine == true) {
+            if (mineRow < board.length - 1) {
+                mineRow += 1;
+                if (board[mineRow][mineColumn].getHasMine() == false) {
+                    board[mineRow][mineColumn].setHasMine(true);
+                    board[mineRow][mineColumn].setValue('X');
+                    board[rowGuess][columnGuess].setValue(
+                            Integer.toString(Utils.evaluateCell(rowGuess, columnGuess, board)).charAt(0));
+                    moveMine = false;
+
+                } else if (mineColumn < board[0].length - 1) {
+                    mineColumn += 1;
+                    mineRow = 0;
+                    if (board[mineRow][mineColumn].getHasMine() == false) {
+                        board[mineRow][mineColumn].setHasMine(true);
+                        board[mineRow][mineColumn].setValue('X');
+                        board[rowGuess][columnGuess].setValue(
+                                Integer.toString(Utils.evaluateCell(rowGuess, columnGuess, board)).charAt(0));
+                        moveMine = false;
+                    }
+
+                } else {
+                    mineColumn = 0;
+                    mineRow = 0;
+                    if (board[mineRow][mineColumn].getHasMine() == false) {
+                        board[mineRow][mineColumn].setHasMine(true);
+                        board[mineRow][mineColumn].setValue('X');
+                        board[rowGuess][columnGuess].setValue(
+                                Integer.toString(Utils.evaluateCell(rowGuess, columnGuess, board)).charAt(0));
+                        moveMine = false;
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Reset: \u001B[0m
