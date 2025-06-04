@@ -1,10 +1,7 @@
 package io.nology;
 
 import java.util.Scanner;
-
-import io.nology.classes.Board;
 import io.nology.classes.Cell;
-import io.nology.classes.GameInfo;
 import io.nology.classes.TextColor;
 import io.nology.utils.Utils;
 

@@ -1,7 +1,5 @@
 package io.nology.classes;
 
-import java.util.Set;
-
 public class GameInfo {
     private int rows;
     private int columns;

@@ -1,11 +1,9 @@
 package io.nology.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
-
 import io.nology.classes.Cell;
 import io.nology.classes.TextColor;
 
@@ -28,7 +26,6 @@ public class Utils {
             }
         }
 
-        // System.out.println(Arrays.deepToString(mineCoordinates.toArray()));
         int[][] coordinates = mineCoordinates.toArray(new int[mineCoordinates.size()][]);
         return coordinates;
     }
@@ -156,7 +153,6 @@ public class Utils {
                             board[rowPosition + i][columnPosition + j].setWasChecked(true);
                             checkedCount += 1;
                         }
-
                     }
                 }
             }
@@ -227,43 +223,3 @@ public class Utils {
         }
     }
 }
-
-// Reset: \u001B[0m
-// Black: \u001B[30m
-// Red: \u001B[31m
-// Green: \u001B[32m
-// Yellow: \u001B[33m
-// Blue: \u001B[34m
-// Purple: \u001B[35m
-// Cyan: \u001B[36m
-// White: \u001B[37m
-
-// public static void boardPrint(Cell[][] board, boolean gameEnd) {
-// int rows = board.length;
-// int columns = board[0].length - 1;
-// System.out.printf("%n");
-// printRowDivider(columns, true);
-// for (int i = 0; i < rows; i++) {
-// printRowDivider(columns, false);
-// System.out.printf("|");
-// for (int j = 0; j < columns; j++) {
-// if (gameEnd == false && board[i][j].getWasChecked() == true) {
-// System.out.printf(" " + board[i][j].getValue() + " ");
-// } else {
-// System.out.printf(" " + "?" + " ");
-// }
-// System.out.printf("|");
-// }
-// System.out.printf("%n");
-// printRowDivider(columns, false);
-// printRowDivider(columns, true);
-// }
-// }
-
-// public static void printRowDivider(int columns, boolean solid) {
-// System.out.printf(solid ? "+" : "|");
-// for (int i = 0; i < columns; i++) {
-// System.out.printf(solid ? "-------+" : " |");
-// }
-// System.out.printf("%n");
-// }
