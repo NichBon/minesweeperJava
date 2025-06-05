@@ -7,6 +7,8 @@ import io.nology.utils.Utils;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
 
         Scanner inputScanner = new Scanner(System.in);
         int rows = 0;
@@ -50,8 +52,8 @@ public class Main {
 
             if (firstGuess == true && board[rowGuess][columnGuess].getHasMine() == true) {
                 Utils.moveMine(rowGuess, columnGuess, board);
-                firstGuess = false;
             }
+            firstGuess = false;
 
             guessReturnValue = Utils.guess(rowGuess, columnGuess, board);
 
